@@ -96,6 +96,7 @@ export class VictimsMap extends Component {
         <Map
           mapboxToken={this.props.mapboxToken}
           markers={markers}
+          height={550}
           {...this.props}
           renderMarker={this.renderMarker}
         />
