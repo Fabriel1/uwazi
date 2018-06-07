@@ -8,12 +8,12 @@ import t from 'app/I18N/t';
 import Immutable from 'immutable';
 
 class UserForm extends Component {
-  static formGroup(key, label) {
+  static formGroup(key, label, type = 'text') {
     return (
       <FormGroup model={`.${key}`}>
         <Field model={`.${key}`}>
           <label className="form-group-label" htmlFor={key}>
-            <input id={key} className="form-control"/>
+            <input type={type} id={key} className="form-control"/>
             {label}
           </label>
         </Field>
@@ -30,7 +30,7 @@ class UserForm extends Component {
           <span className="btn-label">Back</span>
         </I18NLink>
         <button type="submit" className="btn btn-success save-template">
-          <i className="fa fa-save" />
+          <i className="far fa-save" />
           <span className="btn-label">{t('System', 'Save')}</span>
         </button>
       </div>
@@ -96,6 +96,7 @@ class UserForm extends Component {
             <div className="panel-body">
               {UserForm.formGroup('username', t('System', 'Username'))}
               {UserForm.formGroup('email', t('System', 'Email'))}
+              {UserForm.formGroup('password', t('System', 'Password'), 'password')}
               <FormGroup model=".role" className="form-group-radio">
                 <Field model=".role">
                   {t('System', 'Role')}
