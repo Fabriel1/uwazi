@@ -7,6 +7,7 @@ import { I18NLink } from 'app/I18N';
 import { actions as formActions, Field, Form } from 'react-redux-form';
 import { FormGroup } from 'app/Forms';
 import ShowIf from 'app/App/ShowIf';
+import { Icon } from 'UI';
 
 import { inserted, addProperty } from 'app/Templates/actions/templateActions';
 import MetadataProperty from 'app/Templates/components/MetadataProperty';
@@ -33,7 +34,6 @@ export class MetadataTemplate extends Component {
   render() {
     const { connectDropTarget } = this.props;
     const commonProperties = this.props.commonProperties || [];
-
     return (
       <div>
         <RemovePropertyConfirm />
@@ -63,18 +63,18 @@ export class MetadataTemplate extends Component {
                   return <MetadataProperty {...config} key={localID} localID={localID} index={index}/>;
                 })}
                 <div className="no-properties">
-                  <span className="no-properties-wrap"><i className="fa fa-clone" />Drag properties here</span>
+                  <span className="no-properties-wrap"><Icon icon="clone" />Drag properties here</span>
                 </div>
               </ul>
             )}
           </ShowIf>
           <div className="settings-footer">
             <I18NLink to={this.props.backUrl} className="btn btn-default">
-              <i className="fa fa-arrow-left" />
+              <Icon icon="arrow-left" />
               <span className="btn-label">Back</span>
             </I18NLink>
             <button type="submit" className="btn btn-success save-template" disabled={!!this.props.savingTemplate}>
-              <i className="far fa-save"/>
+              <Icon icon="save"/>
               <span className="btn-label">Save</span>
             </button>
           </div>
@@ -128,13 +128,16 @@ const dropTarget = DropTarget('METADATA_OPTION', target, connector => ({
 
 export { dropTarget };
 
-const mapStateToProps = ({ template, templates }) => ({
+const mapStateToProps = ({ template, templates, relationTypes }, props) => {
+  const _templates = props.relationType ? relationTypes : templates;
+  return {
     _id: template.data._id,
     commonProperties: template.data.commonProperties,
     properties: template.data.properties,
-    templates,
+    templates: _templates,
     savingTemplate: template.uiState.get('savingTemplate')
-});
+  };
+};
 
 function mapDispatchToProps(dispatch) {
   return bindActionCreators({ inserted, addProperty, setErrors: formActions.setErrors }, dispatch);
