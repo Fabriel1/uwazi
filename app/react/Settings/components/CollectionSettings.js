@@ -4,12 +4,14 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import moment from 'moment';
 import { isClient } from 'app/utils';
+import { Link } from 'react-router';
 
 import { actions } from 'app/BasicReducer';
 import SettingsAPI from 'app/Settings/SettingsAPI';
 import { notify } from 'app/Notifications/actions/notificationsActions';
 import { RadioButtons } from 'app/Forms';
 import { t } from 'app/I18N';
+import { Icon } from 'UI';
 
 export class CollectionSettings extends Component {
   constructor(props, context) {
@@ -203,7 +205,7 @@ export class CollectionSettings extends Component {
               </div>
             </div>
             <div className="alert alert-info">
-              <i className="fa fa-home" />
+              <Icon icon="home" size="2x" />
               <div>
                 The landing page is the first thing users will see when visiting your Uwazi instance.<br />
                 You can use any URL from your Uwazi instance as a landing page, examples:
@@ -238,7 +240,7 @@ export class CollectionSettings extends Component {
               />
             </div>
             <div className="alert alert-info">
-              <i className="fa fa-envelope" />
+              <Icon icon="envelope" size="2x" />
               <div>
                 This is a JSON configuration object that should match the options values required by Nodemailer,
                 as explained in <a href="https://nodemailer.com/smtp/" target="_blank">nodemailer.com/smtp/</a><br />
@@ -246,9 +248,27 @@ export class CollectionSettings extends Component {
                 If left blank, then the configuration file in /api/config/mailer.js will be used.
               </div>
             </div>
+            <h2>{t('System', 'Advanced customizations')}</h2>
+            <div>
+              <Link
+                to="/settings/customisation"
+                href="/settings/customisation"
+                className="btn btn-default"
+              >
+                {t('System', 'Custom Styles')}
+              </Link>
+              &nbsp;
+              <Link
+                to="/settings/custom-uploads"
+                href="/settings/custom-uploads"
+                className="btn btn-default"
+              >
+                {t('System', 'Custom Uploads')}
+              </Link>
+            </div>
             <div className="settings-footer">
               <button type="submit" className="btn btn-success">
-                <i className="far fa-save" />
+                <Icon icon="save" />
                 <span className="btn-label">{t('System', 'Save')}</span>
               </button>
             </div>
