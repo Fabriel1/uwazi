@@ -147,6 +147,24 @@ describe('search', () => {
       .catch(catchErrors(done));
     });
 
+    it('should convert aggregation buckets that are objects to arrays', (done) => {
+      result.aggregations.all = {
+        dictionaryWithGroups: {
+          buckets: {
+            a: { doc_count: 2, filtered: { doc_count: 1 } },
+            b: { doc_count: 2, filtered: { doc_count: 1 } }
+          }
+        }
+      };
+      spyOn(elastic, 'search').and.returnValue(Promise.resolve(result));
+      search.search({ searchTerm: '', geolocation: true }, 'en')
+      .then((response) => {
+        const expectedBuckets = [{ key: 'a', doc_count: 2, filtered: { doc_count: 1 } }, { key: 'b', doc_count: 2, filtered: { doc_count: 1 } }];
+        expect(response.aggregations.all.dictionaryWithGroups.buckets).toEqual(expectedBuckets);
+        done();
+      });
+    });
+
     it('should match entities related somehow with other entities with a title that is the search term', (done) => {
       search.search({ searchTerm: 'egypt' }, 'en')
       .then(({ rows }) => {
@@ -239,7 +257,7 @@ describe('search', () => {
 
     describe('when the query is for geolocation', () => {
       it('should set size to 9999', (done) => {
-        spyOn(elastic, 'search').and.returnValue(Promise.resolve({ hits: { hits: [] } }));
+        spyOn(elastic, 'search').and.returnValue(Promise.resolve(result));
         search.search({ searchTerm: '', geolocation: true }, 'en')
         .then(() => {
           const elasticQuery = elastic.search.calls.argsFor(0)[0].body;
@@ -336,7 +354,15 @@ describe('search', () => {
         .catch(catchErrors(done));
       });
 
-      describe('AND falg', () => {
+      describe('allAggregations', () => {
+        it('should return all aggregations', async () => {
+          const allAggregations = await search.search({ allAggregations: true }, 'en');
+          const aggregationsIncluded = (Object.keys(allAggregations.aggregations.all));
+          expect(aggregationsIncluded).toMatchSnapshot();
+        });
+      });
+
+      describe('AND flag', () => {
         it('should restrict the results to those who have all values of the filter', (done) => {
           search.search(
             {
